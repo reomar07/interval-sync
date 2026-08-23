@@ -22,6 +22,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Create Fallback Assets
+        run: |
+          mkdir -p assets
+          touch assets/icon.png assets/splash-icon.png assets/adaptive-icon.png
+
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
@@ -34,6 +39,14 @@ jobs:
       - name: Build Debug APK
         working-directory: android
         env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m"
+        run: ./gradlew assembleDebug --no-daemon -x lint -x test
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: IntervalSync-App
+          path: android/app/build/outputs/apk/debug/*.apk
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m"
         run: ./gradlew assembleDebug --no-daemon -x lint -x test
 
