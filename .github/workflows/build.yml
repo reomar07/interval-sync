@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -23,17 +23,26 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Prebuild Native Android Code
-        run: npx expo prebuild --platform android
+      - name: Install EAS CLI
+        run: npm install -g eas-cli expo-cli
 
-      - name: Build Standalone APK
+      - name: Prebuild Native Android Project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Make Gradle Executable
+        run: chmod +x android/gradlew
+
+      - name: Assemble Debug APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleDebug --stacktrace --no-daemon
 
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
+        with:
+          name: IntervalAlarm-APK
+          path: android/app/build/outputs/apk/debug/*.apk
         with:
           name: IntervalAlarm-APK
           path: android/app/build/outputs/apk/release/*.apk
