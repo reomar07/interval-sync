@@ -25,24 +25,21 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Install EAS CLI
-        run: npm install -g eas-cli expo-cli
+      - name: Install CLI Tools
+        run: npm install -g eas-cli @expo/cli
 
-      - name: Prebuild Native Android Project
+      - name: Prebuild Native Android
         run: npx expo prebuild --platform android --no-install
 
       - name: Make Gradle Executable
         run: chmod +x android/gradlew
 
-      - name: Assemble Debug APK
+      - name: Assemble APK
         working-directory: android
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: ./gradlew assembleDebug --no-daemon
 
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: IntervalAlarm-APK
+          name: IntervalSync-APK
           path: android/app/build/outputs/apk/debug/*.apk
-        with:
-          name: IntervalAlarm-APK
-          path: android/app/build/outputs/apk/release/*.apk
