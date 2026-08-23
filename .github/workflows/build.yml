@@ -22,12 +22,13 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Create Fallback Assets
+      - name: Generate Valid PNG Assets
         run: |
           mkdir -p assets
-          echo "" > assets/icon.png
-          echo "" > assets/splash-icon.png
-          echo "" > assets/adaptive-icon.png
+          # Write valid transparent 1x1 PNG binaries
+          echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" | base64 -d > assets/icon.png
+          echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" | base64 -d > assets/splash-icon.png
+          echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" | base64 -d > assets/adaptive-icon.png
 
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
