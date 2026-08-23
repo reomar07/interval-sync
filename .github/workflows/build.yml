@@ -25,15 +25,23 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Install CLI Tools
-        run: npm install -g eas-cli @expo/cli
-
       - name: Prebuild Native Android
         run: npx expo prebuild --platform android --no-install
 
       - name: Make Gradle Executable
         run: chmod +x android/gradlew
 
+      - name: Build Debug APK
+        working-directory: android
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m"
+        run: ./gradlew assembleDebug --no-daemon -x lint -x test
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: IntervalSync-App
+          path: android/app/build/outputs/apk/debug/*.apk
       - name: Assemble APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
